@@ -28,16 +28,19 @@ class CUHKSZ_AcademicGraph(InMemoryDataset):
         for raw_path in self.raw_paths:
             with zipfile.ZipFile(raw_path,"r") as zip_ref:
                 zip_ref.extractall(self.raw_dir)
+        
+        unzip_dir = os.path.join(self.raw_dir, "CUHKSZ_AcademicGraph-rawdata_released")
+        print(unzip_dir)
 
         # Process index mapping from semantic to our dataset
-        raw_paper_info = pd.read_csv(os.path.join(self.raw_dir, "Raw_Paper_Info.csv"))
+        raw_paper_info = pd.read_csv(os.path.join(unzip_dir, "Raw_Paper_Info.csv"))
         raw_paper_info.columns = raw_paper_info.columns.str.strip()
         df_reIndexMapping = pd.DataFrame({"AG_Index":raw_paper_info.index}, index=raw_paper_info.Paper_ID)
         reIndexMapping = dict(zip(raw_paper_info.Paper_ID, raw_paper_info.index))
         df_reIndexMapping.to_csv(os.path.join(self.processed_dir, "IndexMapping.csv") )
 
         # Process edge information [edge_index]
-        raw_citations = pd.read_csv(os.path.join(self.raw_dir, "Raw_Citations.csv"))
+        raw_citations = pd.read_csv(os.path.join(unzip_dir, "Raw_Citations.csv"))
         raw_citations.columns = raw_citations.columns.str.strip()
         citations = pd.DataFrame({"Paper_ID": raw_citations.Paper_ID.map(reIndexMapping),
                                 "Ref_Paper_ID": raw_citations.Ref_Paper_ID.map(reIndexMapping)})
@@ -45,7 +48,7 @@ class CUHKSZ_AcademicGraph(InMemoryDataset):
         edge_index = citations.values.T
 
         # Process node embeding [x]
-        raw_embedding = pd.read_csv(os.path.join(self.raw_dir, "Raw_Paper_Embedding.csv"))
+        raw_embedding = pd.read_csv(os.path.join(unzip_dir, "Raw_Paper_Embedding.csv"))
         raw_embedding.Paper_ID = raw_embedding.Paper_ID.map(reIndexMapping)
         embedding = raw_embedding.copy()
         embedding.to_csv(os.path.join(self.processed_dir, "Embedding.csv"), index=None)
