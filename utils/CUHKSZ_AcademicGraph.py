@@ -8,11 +8,11 @@ from torch_geometric.data import Data, InMemoryDataset, download_url
 
 
 class CUHKSZ_AcademicGraph(InMemoryDataset):
-    def __init__(self, root, transform=None, pre_transform=None, pre_filter=None, with_label=False, with_title=False):
+    def __init__(self, root, transform=None, pre_transform=None, pre_filter=None, with_label = True, with_title=True):
         super().__init__(root, transform, pre_transform, pre_filter)
         self.data, self.slices = torch.load(self.processed_paths[0])
-        self.with_label = with_label
-        self.with_title = with_title
+        self.with_label = False
+        self.with_title = False
         if self.with_label or self.with_title:
             self.process()
     @property
