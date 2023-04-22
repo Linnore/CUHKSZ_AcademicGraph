@@ -9,12 +9,12 @@ from torch_geometric.data import Data, InMemoryDataset, download_url
 
 class CUHKSZ_AcademicGraph(InMemoryDataset):
     def __init__(self, root, transform=None, pre_transform=None, pre_filter=None, with_label = True, with_title=True):
+        self.with_label = with_label
+        self.with_title = with_title
         super().__init__(root, transform, pre_transform, pre_filter)
-        self.data, self.slices = torch.load(self.processed_paths[0])
-        self.with_label = False
-        self.with_title = False
         if self.with_label or self.with_title:
             self.process()
+        self.data, self.slices = torch.load(self.processed_paths[0])
     @property
     def raw_file_names(self):
         return ["CUHKSZ_AcademicGraph_Rawdata.zip"]
@@ -91,7 +91,6 @@ class CUHKSZ_AcademicGraph(InMemoryDataset):
                 if not paperId in valid_paper_set or not ref_paperId in valid_paper_set:
                     valid[i] = False
                 i += 1
-            print(valid)
             raw_citations = raw_citations[valid]
             raw_citations = raw_citations.reset_index()
 
@@ -130,10 +129,8 @@ class CUHKSZ_AcademicGraph(InMemoryDataset):
         else:
             title = None
         
-        print(y, title)
         # Creat Data [Graph]
         cuhksz_ag = Data(x=x, edge_index=edge_index, y=y, title=title)
-        print(cuhksz_ag.y)
 
 
         # Read data into huge `Data` list.
