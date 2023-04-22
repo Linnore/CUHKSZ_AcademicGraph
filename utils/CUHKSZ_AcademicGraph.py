@@ -130,6 +130,9 @@ class CUHKSZ_AcademicGraph(InMemoryDataset):
             title = None
         
         # Creat Data [Graph]
+        x = torch.from_numpy(x)
+        edge_index = torch.from_numpy(edge_index)
+        y = torch.from_numpy(y)
         cuhksz_ag = Data(x=x, edge_index=edge_index, y=y, title=title)
 
 
