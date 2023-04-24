@@ -29,6 +29,21 @@ class CUHKSZ_AcademicGraph(InMemoryDataset):
                      self.raw_dir, filename="CUHKSZ_AcademicGraph_Rawdata.zip")
         ...
 
+
+    def get_masks(self, num_nodes, train_ratio=.6, val_ratio=.2, test_ratio=.2, seed=118010142):
+        rand_idx = np.arange(num_nodes)
+        np.random.shuffle(rand_idx)
+        train_mask = torch.zeros(num_nodes, dtype=bool)
+        val_mask = torch.zeros(num_nodes, dtype=bool)
+        test_mask = torch.zeros(num_nodes, dtype=bool)
+        
+        train_mask[rand_idx[:int(num_nodes*train_ratio)]] = True
+        val_mask[rand_idx[int(num_nodes*train_ratio):int(num_nodes*(1-test_ratio))]] = True
+        test_mask[rand_idx[int(num_nodes*(1-test_ratio)):]]
+        
+        return train_mask, val_mask, test_mask
+        
+    
     def process(self):
         for raw_path in self.raw_paths:
             print(raw_path)
@@ -133,7 +148,9 @@ class CUHKSZ_AcademicGraph(InMemoryDataset):
         x = torch.from_numpy(x).to(torch.double)
         edge_index = torch.from_numpy(edge_index).to(torch.int)
         y = torch.from_numpy(y).to(torch.int)
-        cuhksz_ag = Data(x=x, edge_index=edge_index, y=y, title=title)
+        
+        train_mask, val_mask, test_mask = self.get_masks(num_nodes = x.shape[0])
+        cuhksz_ag = Data(x=x, edge_index=edge_index, y=y, title=title, train_mask=train_mask, val_mask=val_mask, test_mask=test_mask)
 
 
         # Read data into huge `Data` list.
