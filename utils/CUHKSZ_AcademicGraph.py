@@ -8,7 +8,7 @@ from torch_geometric.data import Data, InMemoryDataset, download_url
 
 
 class CUHKSZ_AcademicGraph(InMemoryDataset):
-    def __init__(self, root, transform=None, pre_transform=None, pre_filter=None, with_label = True, with_title=True):
+    def __init__(self, root, transform=None, pre_transform=None, pre_filter=None, with_label = True, with_title=False):
         self.with_label = with_label
         self.with_title = with_title
         super().__init__(root, transform, pre_transform, pre_filter)
@@ -146,8 +146,9 @@ class CUHKSZ_AcademicGraph(InMemoryDataset):
         
         # Creat Data [Graph]
         x = torch.from_numpy(x).to(torch.double)
-        edge_index = torch.from_numpy(edge_index).to(torch.int)
-        y = torch.from_numpy(y).to(torch.int)
+        edge_index = torch.from_numpy(edge_index).to(torch.int64)
+        if y:
+            y = torch.from_numpy(y).to(torch.int)
         
         train_mask, val_mask, test_mask = self.get_masks(num_nodes = x.shape[0])
         cuhksz_ag = Data(x=x, edge_index=edge_index, y=y, title=title, train_mask=train_mask, val_mask=val_mask, test_mask=test_mask)
