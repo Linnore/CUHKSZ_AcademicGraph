@@ -147,7 +147,7 @@ class CUHKSZ_AcademicGraph(InMemoryDataset):
         # Creat Data [Graph]
         x = torch.from_numpy(x).to(torch.double)
         edge_index = torch.from_numpy(edge_index).to(torch.int64)
-        if y!=None:
+        if self.with_label:
             y = torch.from_numpy(y).to(torch.int)
         
         train_mask, val_mask, test_mask = self.get_masks(num_nodes = x.shape[0])
