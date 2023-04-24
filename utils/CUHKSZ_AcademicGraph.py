@@ -145,7 +145,7 @@ class CUHKSZ_AcademicGraph(InMemoryDataset):
             title = None
         
         # Creat Data [Graph]
-        x = torch.from_numpy(x).to(torch.double)
+        x = torch.from_numpy(x).to(torch.float32)
         edge_index = torch.from_numpy(edge_index).to(torch.int64)
         if self.with_label:
             y = torch.from_numpy(y).to(torch.int)
