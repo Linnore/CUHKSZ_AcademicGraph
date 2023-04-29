@@ -76,6 +76,8 @@ class CUHKSZ_AcademicGraph(InMemoryDataset):
                 top8_labels_map[field] = i
             raw_paper_info["fieldsOfStudy"] = raw_paper_info["fieldsOfStudy"].map(lambda x: top8_labels_map[x])
             y = raw_paper_info["fieldsOfStudy"].values
+            top8_labels = top8_labels.reset_index()
+            top8_labels.to_csv(os.path.join(self.processed_dir, "LabelMapping.csv"))
 
             valid_paper_set = set()
             for paperId in raw_paper_info["paperId"]:
@@ -148,7 +150,8 @@ class CUHKSZ_AcademicGraph(InMemoryDataset):
         x = torch.from_numpy(x).to(torch.float32)
         edge_index = torch.from_numpy(edge_index).to(torch.int64)
         if self.with_label:
-            y = torch.from_numpy(y).to(torch.int)
+            y = torch.from_numpy(y).to(torch.int64)
+            print("test")
         
         train_mask, val_mask, test_mask = self.get_masks(num_nodes = x.shape[0])
         cuhksz_ag = Data(x=x, edge_index=edge_index, y=y, title=title, train_mask=train_mask, val_mask=val_mask, test_mask=test_mask)
