@@ -39,7 +39,7 @@ class CUHKSZ_AcademicGraph(InMemoryDataset):
         
         train_mask[rand_idx[:int(num_nodes*train_ratio)]] = True
         val_mask[rand_idx[int(num_nodes*train_ratio):int(num_nodes*(1-test_ratio))]] = True
-        test_mask[rand_idx[int(num_nodes*(1-test_ratio)):]]
+        test_mask[rand_idx[int(num_nodes*(1-test_ratio)):]] = True
         
         return train_mask, val_mask, test_mask
         
