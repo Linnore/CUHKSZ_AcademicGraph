@@ -32,6 +32,7 @@ class CUHKSZ_AcademicGraph(InMemoryDataset):
 
     def get_masks(self, num_nodes, train_ratio=.6, val_ratio=.2, test_ratio=.2, seed=118010142):
         rand_idx = np.arange(num_nodes)
+        np.random.seed(seed)
         np.random.shuffle(rand_idx)
         train_mask = torch.zeros(num_nodes, dtype=bool)
         val_mask = torch.zeros(num_nodes, dtype=bool)
